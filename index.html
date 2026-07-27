@@ -72,30 +72,6 @@ body { font-family: var(--sans); background: var(--cream); color: var(--text); o
 @keyframes pulse-scroll { 0%,100%{opacity:1;transform:scaleY(1)} 50%{opacity:.4;transform:scaleY(.55)} }
 
 /* FIXED UI */
-#music-bar {
-  position:fixed; top:1.25rem; right:1.25rem; z-index:200;
-  background:rgba(255,255,255,.92); border:1px solid var(--gold-light);
-  border-radius:50px; padding:.5rem 1.1rem .5rem .55rem;
-  display:flex; align-items:center; gap:.7rem;
-  backdrop-filter:blur(12px); box-shadow:0 2px 20px rgba(201,169,110,.18);
-}
-#music-btn {
-  width:32px; height:32px; border-radius:50%;
-  background:var(--gold); border:none; cursor:pointer;
-  color:white; font-size:.9rem; display:flex; align-items:center; justify-content:center;
-  transition:.3s;
-}
-#music-btn:hover { background:var(--gold-dark); transform:scale(1.08); }
-.music-label { font-size:.58rem; letter-spacing:.18em; color:var(--gold-dark); text-transform:uppercase; }
-.waves { display:flex; gap:2.5px; align-items:center; height:14px; }
-.waves span { display:block; width:2.5px; background:var(--gold); border-radius:2px; animation:wave-a 1s ease-in-out infinite; }
-.waves span:nth-child(1){height:4px;animation-delay:.00s}
-.waves span:nth-child(2){height:10px;animation-delay:.10s}
-.waves span:nth-child(3){height:6px;animation-delay:.20s}
-.waves span:nth-child(4){height:12px;animation-delay:.15s}
-.waves span:nth-child(5){height:4px;animation-delay:.05s}
-.waves.paused span { animation-play-state:paused; }
-
 #nav-dots {
   position:fixed; right:1.4rem; top:50%; transform:translateY(-50%);
   z-index:150; display:flex; flex-direction:column; gap:8px;
@@ -171,11 +147,16 @@ body { font-family: var(--sans); background: var(--cream); color: var(--text); o
 }
 .hero-quote {
   font-family:var(--serif);
-  font-size:clamp(.95rem,2.2vw,1.2rem);
+  font-size:clamp(.9rem,2.1vw,1.15rem);
   font-style:italic; color:var(--gold-light);
-  max-width:420px; line-height:1.85;
+  max-width:480px; line-height:1.8;
   animation: fadeUp .9s .5s ease both;
   margin-top:1.25rem;
+}
+.hero-quote small {
+  display:block; font-style:normal; font-size:.62rem;
+  letter-spacing:.18em; text-transform:uppercase;
+  color:rgba(232,213,176,.55); margin-top:.75rem;
 }
 .hero-scroll {
   position:absolute; bottom:2rem; left:50%; transform:translateX(-50%);
@@ -798,7 +779,6 @@ body.env-open { overflow:hidden; }
 @media(max-width:480px){
   .container,.container--wide { padding:3rem 1.5rem; }
   #nav-dots { display:none; }
-  #music-bar { right:.75rem; top:.75rem; }
   .attend-row { flex-direction:column; }
   .contact-grid { gap:2rem; }
 
@@ -862,13 +842,6 @@ body.env-open { overflow:hidden; }
 </div>
 
 <!-- MUSIC -->
-<div id="music-bar">
-  <button id="music-btn" onclick="toggleMusic()" aria-label="Música">♪</button>
-  <div class="waves paused" id="waves">
-    <span></span><span></span><span></span><span></span><span></span>
-  </div>
-  <span class="music-label">Música</span>
-</div>
 <audio id="bg-audio" loop>
 <source src="cancion.mp3" type="audio/mpeg">
 </audio>
@@ -914,8 +887,8 @@ body.env-open { overflow:hidden; }
   <p class="hero-date">Domingo · 15 de Noviembre de 2026</p>
 
   <p class="hero-quote">
-    Donde el amor florece,<br>
-    comienza una nueva historia.
+    "Grábame como un sello sobre tu corazón, como un sello sobre tu brazo, porque el amor es fuerte como la muerte."
+    <small>Cant. de los Cant. 8:6</small>
   </p>
 
   <div class="hero-scroll">
@@ -1013,15 +986,11 @@ body.env-open { overflow:hidden; }
       <div class="reveal d2">
         <h3 class="story-sub">Nuestra historia</h3>
         <p class="story-body">
-          Desde el primer momento en que nuestros caminos se cruzaron, supimos que algo especial estaba comenzando a escribirse entre nosotros.
+          Nuestra historia comenzó cuando dos almas foráneas, sin imaginarlo, se cruzaron por casualidad. Lo que inició con conversaciones, risas y una amistad sincera, poco a poco se transformó en el lugar donde ambos encontramos un hogar.
         </p>
         <br>
         <p class="story-body">
-          Entre risas, conversaciones y momentos compartidos, fuimos construyendo una complicidad y un amor que, con el tiempo, se convirtió en lo mejor que nos ha pasado.
-        </p>
-        <br>
-        <p class="story-body">
-          Hoy, llenos de gratitud por todo lo vivido, estamos listos para dar un paso más de la mano y comenzar juntos nuestro para siempre.
+          El amor es así: a veces, solo se necesita un encuentro inesperado para cambiar una vida para siempre.
         </p>
       </div>
     </div>
@@ -1143,7 +1112,7 @@ body.env-open { overflow:hidden; }
 <section id="dresscode">
   <div class="container">
     <span class="eyebrow reveal">Código de Vestimenta</span>
-    <h2 class="section-title reveal">Etiqueta <em>formal</em></h2>
+    <h2 class="section-title reveal">Cocktail <em>Chic</em></h2>
     <div class="divider-line"></div>
 
     <div class="dress-badge reveal">✦ Cocktail / Garden Chic ✦</div>
@@ -1300,7 +1269,7 @@ function cerrarSobre(){
   ov.classList.add('hide');
   document.body.classList.remove('env-open');
   setTimeout(function(){ ov.remove(); }, 750);
-  if(!playing) toggleMusic();
+  playMusic();
 }
 
 /* ---- COUNTDOWN ---- */
@@ -1447,17 +1416,9 @@ const secObs = new IntersectionObserver(entries => {
 }, { threshold: 0.45 });
 SECS.forEach(id => { const el=document.getElementById(id); if(el) secObs.observe(el); });
 
-/* ---- MUSIC ---- */
-let playing = false;
-const audio  = document.getElementById('bg-audio');
-const musicBtn = document.getElementById('music-btn');
-const wavesEl  = document.getElementById('waves');
-function toggleMusic(){
-  playing = !playing;
-  musicBtn.textContent = playing ? '⏸' : '♪';
-  wavesEl.classList.toggle('paused', !playing);
-  playing ? audio.play().catch(()=>{}) : audio.pause();
-}
+/* ---- MUSIC (autoplay silencioso, sin control visible) ---- */
+const audio = document.getElementById('bg-audio');
+function playMusic(){ audio.play().catch(()=>{}); }
 
 /* ---- RSVP ---- */
 let attendVal = '';
